@@ -144,10 +144,15 @@ public class Policy_detailsResource {
     @Timed
     public List<AgentCommission> agentCommision(@PathVariable String agentNo)
     {
+        //Getting all Agents
         List<Agent_masterDTO> agent_masterDTOS = agent_masterRepository.findAll().stream()
             .map(agent_masterMapper::toDto)
             .collect(Collectors.toCollection(LinkedList::new));
+
+        //Declaring list of commission
         List<AgentCommission> agentCommissions = new ArrayList<>();
+
+        //Calculation agent wise commissions
         for (Agent_masterDTO agent:agent_masterDTOS
             ) {
             AgentCommission agentCommission = new AgentCommission();
@@ -169,19 +174,24 @@ public class Policy_detailsResource {
         return commission;
     }
 
-
-
     @GetMapping("/dashboard")
     @Timed
     public List<AgentSchemeCount> allAgents()
     {
+        //getting all agents
         List<Agent_masterDTO> agent_masterDTOS = agent_masterRepository.findAll().stream()
             .map(agent_masterMapper::toDto)
             .collect(Collectors.toCollection(LinkedList::new));
+
+        //Make a list of Agent Schemes
         List<AgentSchemeCount> agentSchemeCounts = new ArrayList<>();
+
+        //Getting All Schemes
+        List<Scheme_master> scheme_masters = scheme_masterRepository.findAll();
+
+        //
         for (Agent_masterDTO agent:agent_masterDTOS
             ) {
-            List<Scheme_master> scheme_masters = scheme_masterRepository.findAll();
 
             for (Scheme_master schemeMaster: scheme_masters
                 ) {

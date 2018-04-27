@@ -14,6 +14,17 @@
         vm.getCommision=getCommision;
         vm.save = save;
         vm.isAuthenticated = null;
+
+        vm.policy_details = {
+            date: null,
+            customerName: null,
+            policyAmount: null,
+            commission: null,
+            schemeNo: null,
+            agentNo: null,
+            policyNo: null,
+            id: null
+        };
 //        vm.login = LoginService.open;
 //        vm.register = register;
         vm.datePickerOpenStatus = {};
@@ -33,6 +44,10 @@
 
         function loadAll()
         {
+            Policy_details.query(function(result){
+                vm.policy_details.policyNo = result.length+1;
+            });
+
             Agent_master.query(function(result){
                 vm.agent_masters = result;
             });
@@ -48,6 +63,7 @@
             if (vm.policy_details.id !== null) {
                 Policy_details.update(vm.policy_details, onSaveSuccess, onSaveError);
             } else {
+                console.log(vm.policy_details);
                 Policy_details.save(vm.policy_details, onSaveSuccess, onSaveError);
             }
         }
