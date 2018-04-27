@@ -1,0 +1,24 @@
+{
+    "fluentMethods": true,
+    "relationships": [],
+    "fields": [
+        {
+            "fieldName": "schemeName",
+            "fieldType": "String"
+        },
+        {
+            "fieldName": "commission",
+            "fieldType": "Float"
+        },
+        {
+            "fieldName": "schemNo",
+            "fieldType": "Integer"
+        }
+    ],
+    "changelogDate": "20180427053641",
+    "dto": "mapstruct",
+    "service": "serviceImpl",
+    "entityTableName": "scheme_master",
+    "jpaMetamodelFiltering": false,
+    "pagination": "no"
+}

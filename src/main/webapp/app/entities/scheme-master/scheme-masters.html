@@ -1,0 +1,60 @@
+<div>
+    <h2>Scheme Masters</h2>
+    <jhi-alert></jhi-alert>
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-xs-4 no-padding-left">
+                <button class="btn btn-primary" ui-sref="scheme-master.new" >
+                    <span class="glyphicon glyphicon-plus"></span>
+                    <span >
+                        Create new Scheme Master
+                    </span>
+                </button>
+            </div>
+        </div>
+    </div>
+    <br/>
+    <div class="table-responsive">
+        <table class="jh-table table table-striped">
+            <thead>
+                <tr>
+                    <!--<th><span>ID</span></th>-->
+                    <th><span>Schem No</span></th>
+                    <th><span>Scheme Name</span></th>
+                    <th><span>Commission</span></th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr ng-repeat="scheme_master in vm.scheme_masters track by scheme_master.id">
+                    <!--<td><a ui-sref="scheme-master-detail({id:scheme_master.id})">{{scheme_master.id}}</a></td>-->
+                    <td>{{scheme_master.schemNo}}</td>
+                    <td>{{scheme_master.schemeName}}</td>
+                    <td>{{scheme_master.commission}}</td>
+                    <td class="text-right">
+                        <div class="btn-group flex-btn-group-container">
+                            <button type="submit"
+                                    ui-sref="scheme-master-detail({id:scheme_master.id})"
+                                    class="btn btn-info btn-sm">
+                                <span class="glyphicon glyphicon-eye-open"></span>
+                                <span class="hidden-sm-down"></span>
+                            </button>
+                            <button type="submit"
+                                    ui-sref="scheme-master.edit({id:scheme_master.id})"
+                                    class="btn btn-primary btn-sm">
+                                <span class="glyphicon glyphicon-pencil"></span>
+                                <span class="hidden-sm-down"></span>
+                            </button>
+                            <button type="submit"
+                                    ui-sref="scheme-master.delete({id:scheme_master.id})"
+                                    class="btn btn-danger btn-sm">
+                                <span class="glyphicon glyphicon-remove-circle"></span>
+                                <span class="hidden-sm-down"></span>
+                            </button>
+                        </div>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</div>

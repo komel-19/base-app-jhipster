@@ -1,0 +1,40 @@
+{
+    "fluentMethods": true,
+    "relationships": [],
+    "fields": [
+        {
+            "fieldName": "date",
+            "fieldType": "LocalDate"
+        },
+        {
+            "fieldName": "customerName",
+            "fieldType": "String"
+        },
+        {
+            "fieldName": "policyAmount",
+            "fieldType": "Float"
+        },
+        {
+            "fieldName": "commission",
+            "fieldType": "Float"
+        },
+        {
+            "fieldName": "schemeNo",
+            "fieldType": "Integer"
+        },
+        {
+            "fieldName": "agentNo",
+            "fieldType": "Integer"
+        },
+        {
+            "fieldName": "policyNo",
+            "fieldType": "Integer"
+        }
+    ],
+    "changelogDate": "20180427054033",
+    "dto": "mapstruct",
+    "service": "serviceImpl",
+    "entityTableName": "policy_details",
+    "jpaMetamodelFiltering": false,
+    "pagination": "no"
+}

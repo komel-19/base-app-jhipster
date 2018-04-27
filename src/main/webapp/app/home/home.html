@@ -1,41 +1,74 @@
 <div ng-cloak>
     <div class="row">
-        <div class="col-md-4">
-            <span class="hipster img-responsive img-rounded"></span>
-        </div>
-        <div class="col-md-8">
-            <h1>Welcome, Java Hipster!</h1>
-            <p class="lead">This is your homepage</p>
-
-            <div ng-switch="vm.isAuthenticated()">
-                <div class="alert alert-success" ng-switch-when="true">
-                    You are logged in as user "{{vm.account.login}}".
-                </div>
-
-                <div class="alert alert-warning" ng-switch-when="false">
-                    If you want to <a class="alert-link" href="" ng-click="vm.login()">sign in</a>, you can try the default accounts:<br/>- Administrator (login="admin" and password="admin") <br/>- User (login="user" and password="user").
-                </div>
-
-                <div class="alert alert-warning" ng-switch-when="false">
-                    You don't have an account yet? <a class="alert-link" ui-sref="register">Register a new account</a>
-                </div>
+        <form name="editForm" role="form" novalidate ng-submit="vm.save()">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true"
+                        ng-click="vm.clear()">&times;</button>
+                <h4 class="modal-title" id="myPolicy_detailsLabel">Create or edit a Policy Details</h4>
             </div>
+            <div class="modal-body">
+                <jhi-alert-error></jhi-alert-error>
+                <div class="form-group" ng-show="vm.policy_details.id">
+                    <label for="id">ID</label>
+                    <input type="text" class="form-control" id="id" name="id"
+                           ng-model="vm.policy_details.id" readonly />
+                </div>
+                <div class="form-group">
+                    <label class="control-label" for="field_policyNo">Policy No</label>
+                    <input type="text" class="form-control" name="policyNo" id="field_policyNo"
+                           ng-model="vm.policy_details.policyNo"
+                    />
+                </div>
+                <div class="form-group">
+                    <label class="control-label" for="field_date">Date</label>
+                    <div class="input-group">
+                        <input id="field_date" type="text" class="form-control" name="date" uib-datepicker-popup="{{dateformat}}" ng-model="vm.policy_details.date" is-open="vm.datePickerOpenStatus.date"
+                        />
+                        <span class="input-group-btn">
+                        <button type="button" class="btn btn-default" ng-click="vm.openCalendar('date')"><i class="glyphicon glyphicon-calendar"></i></button>
+                    </span>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="control-label" for="field_schemeNo">Scheme No</label>
+                    <select class="form-control" ng-model="vm.scheme" id="field_schemeNo">
+                        <option value="{{scheme}}" ng-repeat="scheme in vm.scheme_masters">{{scheme.schemNo}} - {{scheme.schemeName}}</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label class="control-label" for="field_agentNo">Agent No</label>
+                    <select class="form-control" ng-model="vm.policy_details.agentNo" id="field_agentNo">
+                        <option value="{{agent.agentNo}}" ng-repeat="agent in vm.agent_masters">{{agent.agentNo}} - {{agent.agentName}}</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label class="control-label" for="field_customerName">Customer Name</label>
+                    <input type="text" class="form-control" name="customerName" id="field_customerName"
+                    ng-model="vm.policy_details.customerName"
+                    />
+                </div>
+                <div class="form-group">
+                    <label class="control-label" for="field_policyAmount">Policy Amount</label>
+                    <input type="number" class="form-control" name="policyAmount" id="field_policyAmount"
+                    ng-model="vm.policy_details.policyAmount" ng-blur="vm.getCommision()"
+                    />
+                </div>
+                <div class="form-group">
+                    <label class="control-label" for="field_commission">Commission</label>
+                    <input type="number" class="form-control" name="commission" id="field_commission"
+                    ng-model="vm.policy_details.commission"
+                    />
+                </div>
 
-            <p>
-                If you have any question on JHipster:
-            </p>
-
-            <ul>
-                <li><a href="http://www.jhipster.tech/" target="_blank" rel="noopener">JHipster homepage</a></li>
-                <li><a href="http://stackoverflow.com/tags/jhipster/info" target="_blank" rel="noopener">JHipster on Stack Overflow</a></li>
-                <li><a href="https://github.com/jhipster/generator-jhipster/issues?state=open" target="_blank" rel="noopener">JHipster bug tracker</a></li>
-                <li><a href="https://gitter.im/jhipster/generator-jhipster" target="_blank" rel="noopener">JHipster public chat room</a></li>
-                <li><a href="https://twitter.com/java_hipster" target="_blank" rel="noopener">follow @java_hipster on Twitter</a></li>
-            </ul>
-
-            <p>
-             <span>If you like JHipster, don't forget to give us a star on </span>&nbsp;<a href="https://github.com/jhipster/generator-jhipster" target="_blank" rel="noopener">GitHub</a>!
-            </p>
-        </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal" ng-click="vm.clear()">
+                    <span class="glyphicon glyphicon-ban-circle"></span>&nbsp;<span>Cancel</span>
+                </button>
+                <button type="submit" ng-disabled="editForm.$invalid || vm.isSaving" class="btn btn-primary">
+                    <span class="glyphicon glyphicon-save"></span>&nbsp;<span>Save</span>
+                </button>
+            </div>
+        </form>
     </div>
 </div>

@@ -1,0 +1,33 @@
+<div ng-cloak>
+  <div class="row">
+    <div class="col-md-6">
+        <table class="jh-table table table-striped">
+            <thead>
+            <tr>
+                <th><span>Policy No</span></th>
+                <th><span>Date</span></th>
+                <th><span>Customer Name</span></th>
+                <th><span>Policy Amount</span></th>
+                <th><span>Commission</span></th>
+                <th><span>Scheme No</span></th>
+                <th><span>Agent No</span></th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr ng-repeat="policy_details in vm.policy_details">
+                <td><a ui-sref="policy-details-detail({id:policy_details.id})">{{policy_details.policyNo}}</a></td>
+                <td>{{policy_details.date | date:'mediumDate'}}</td>
+                <td>{{policy_details.customerName}}</td>
+                <td>{{policy_details.policyAmount}}</td>
+                <td>{{policy_details.commission}}</td>
+                <td>{{policy_details.schemeNo}}</td>
+                <td>{{policy_details.agentNo}}</td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+    <div class="col-md-6">
+
+    </div>
+  </div>
+</div>
