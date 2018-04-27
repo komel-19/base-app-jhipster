@@ -12,10 +12,7 @@ import javax.validation.ConstraintViolationException;
 import javax.validation.Validator;
 
 import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Set;
-import java.util.UUID;
+import java.util.*;
 
 /**
  * Cassandra repository for the Policy_details entity.
@@ -33,12 +30,16 @@ public class Policy_detailsRepository {
 
     private PreparedStatement truncateStmt;
 
+    private PreparedStatement findpolicybyagentNo;
+
     public Policy_detailsRepository(Session session, Validator validator) {
         this.session = session;
         this.validator = validator;
         this.mapper = new MappingManager(session).mapper(Policy_details.class);
         this.findAllStmt = session.prepare("SELECT * FROM policy_details");
         this.truncateStmt = session.prepare("TRUNCATE policy_details");
+        this.findpolicybyagentNo = session.prepare("SELECT * from policy_by_agentNo WHERE agentNo=:agentNo");
+
     }
 
     public List<Policy_details> findAll() {
@@ -84,5 +85,24 @@ public class Policy_detailsRepository {
     public void deleteAll() {
         BoundStatement stmt = truncateStmt.bind();
         session.execute(stmt);
+    }
+
+
+    public List<Policy_details> findpolicyNo(Integer agentNo){
+        BoundStatement stmt = findpolicybyagentNo.bind();
+        stmt.setInt("agentNo",agentNo);
+        return findAllFromIndex(stmt);
+    }
+
+    private List<Policy_details> findAllFromIndex(BoundStatement stmt) {
+        ResultSet rs=session.execute(stmt);
+        List<Policy_details> policyDetailsList=new ArrayList<>();
+        while(!(rs.isExhausted())) {
+            Policy_details policyDetails=new Policy_details();
+            policyDetails= Optional.ofNullable(rs.one().getUUID("id"))
+                .map(id-> Optional.ofNullable(mapper.get(id))).get().get();
+            policyDetailsList.add(policyDetails);
+        }
+        return policyDetailsList;
     }
 }

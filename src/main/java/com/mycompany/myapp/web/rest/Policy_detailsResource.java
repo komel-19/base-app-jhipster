@@ -1,7 +1,16 @@
 package com.mycompany.myapp.web.rest;
 
 import com.codahale.metrics.annotation.Timed;
+import com.mycompany.myapp.domain.Policy_details;
+import com.mycompany.myapp.domain.Scheme_master;
+import com.mycompany.myapp.repository.Agent_masterRepository;
+import com.mycompany.myapp.repository.Policy_detailsRepository;
+import com.mycompany.myapp.repository.Scheme_masterRepository;
 import com.mycompany.myapp.service.Policy_detailsService;
+import com.mycompany.myapp.service.dto.AgentCommission;
+import com.mycompany.myapp.service.dto.AgentSchemeCount;
+import com.mycompany.myapp.service.dto.Agent_masterDTO;
+import com.mycompany.myapp.service.mapper.Agent_masterMapper;
 import com.mycompany.myapp.web.rest.errors.BadRequestAlertException;
 import com.mycompany.myapp.web.rest.util.HeaderUtil;
 import com.mycompany.myapp.service.dto.Policy_detailsDTO;
@@ -14,9 +23,11 @@ import org.springframework.web.bind.annotation.*;
 import java.net.URI;
 import java.net.URISyntaxException;
 
+import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Optional;
-import java.util.UUID;
+import java.util.stream.Collectors;
 
 /**
  * REST controller for managing Policy_details.
@@ -31,8 +42,20 @@ public class Policy_detailsResource {
 
     private final Policy_detailsService policy_detailsService;
 
-    public Policy_detailsResource(Policy_detailsService policy_detailsService) {
+    private final Agent_masterRepository agent_masterRepository;
+
+    private final Scheme_masterRepository scheme_masterRepository;
+
+    private final Policy_detailsRepository policy_detailsRepository;
+
+    private final Agent_masterMapper agent_masterMapper;
+
+    public Policy_detailsResource(Policy_detailsService policy_detailsService, Agent_masterRepository agent_masterRepository, Scheme_masterRepository scheme_masterRepository, Policy_detailsRepository policy_detailsRepository, Agent_masterMapper agent_masterMapper) {
         this.policy_detailsService = policy_detailsService;
+        this.agent_masterRepository = agent_masterRepository;
+        this.scheme_masterRepository = scheme_masterRepository;
+        this.policy_detailsRepository = policy_detailsRepository;
+        this.agent_masterMapper = agent_masterMapper;
     }
 
     /**
@@ -115,5 +138,68 @@ public class Policy_detailsResource {
         log.debug("REST request to delete Policy_details : {}", id);
         policy_detailsService.delete(id);
         return ResponseEntity.ok().headers(HeaderUtil.createEntityDeletionAlert(ENTITY_NAME, id)).build();
+    }
+
+    @GetMapping("/dashboard/{agentNo}")
+    @Timed
+    public List<AgentCommission> agentCommision(@PathVariable String agentNo)
+    {
+        List<Agent_masterDTO> agent_masterDTOS = agent_masterRepository.findAll().stream()
+            .map(agent_masterMapper::toDto)
+            .collect(Collectors.toCollection(LinkedList::new));
+        List<AgentCommission> agentCommissions = new ArrayList<>();
+        for (Agent_masterDTO agent:agent_masterDTOS
+            ) {
+            AgentCommission agentCommission = new AgentCommission();
+            agentCommission.setAgentNo(agent.getAgentNo());
+            agentCommission.setCommission(agentCommission(agent.getAgentNo()));
+            agentCommissions.add(agentCommission);
+        }
+        return agentCommissions;
+    }
+
+    public Double agentCommission(Integer agentNo)
+    {
+        double commission = 0.0;
+        List<Policy_details> policy_details = policy_detailsRepository.findpolicyNo(agentNo);
+        for (Policy_details policy: policy_details
+             ) {
+            commission = commission + policy.getCommission();
+        }
+        return commission;
+    }
+
+
+
+    @GetMapping("/dashboard")
+    @Timed
+    public List<AgentSchemeCount> allAgents()
+    {
+        List<Agent_masterDTO> agent_masterDTOS = agent_masterRepository.findAll().stream()
+            .map(agent_masterMapper::toDto)
+            .collect(Collectors.toCollection(LinkedList::new));
+        List<AgentSchemeCount> agentSchemeCounts = new ArrayList<>();
+        for (Agent_masterDTO agent:agent_masterDTOS
+            ) {
+            List<Scheme_master> scheme_masters = scheme_masterRepository.findAll();
+
+            for (Scheme_master schemeMaster: scheme_masters
+                ) {
+                AgentSchemeCount agentSchemeCountObj = new AgentSchemeCount();
+                Integer agentSchemeCount = agentSchemeCount(agent.getAgentNo(),schemeMaster.getSchemNo());
+                agentSchemeCountObj.setPolicyNo(agentSchemeCount);
+                agentSchemeCountObj.setSchemeNo(schemeMaster.getSchemNo());
+                agentSchemeCountObj.setAgentNo(agent.getAgentNo());
+                agentSchemeCounts.add(agentSchemeCountObj);
+                System.out.println(agentSchemeCount+"POLICY NUMBER"+schemeMaster.getSchemNo());
+            }
+
+        }
+        return agentSchemeCounts;
+    }
+
+    public Integer agentSchemeCount(Integer agentNo, Integer schemeNo)
+    {
+        return policy_detailsRepository.findpolicyNo(agentNo).stream().filter(policy_details1 -> policy_details1.getSchemeNo()==schemeNo).collect(Collectors.toList()).size();
     }
 }

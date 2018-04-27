@@ -1,5 +1,7 @@
 package com.mycompany.myapp.service;
 
+import com.mycompany.myapp.domain.Policy_details;
+import com.mycompany.myapp.service.dto.AgentSchemeCount;
 import com.mycompany.myapp.service.dto.Agent_masterDTO;
 import java.util.List;
 
@@ -22,6 +24,8 @@ public interface Agent_masterService {
      * @return the list of entities
      */
     List<Agent_masterDTO> findAll();
+
+    Integer agentSchemeCount(Integer agentNo, Integer schemeNo);
 
     /**
      * Get the "id" agent_master.

@@ -1,50 +1,42 @@
-(function () {
+(function() {
     'use strict';
-
     angular
         .module('baseappApp')
         .factory('DashboardService', DashboardService);
 
-    DashboardService.$inject = ['$resource'];
+    DashboardService.$inject = ['$resource', 'DateUtils'];
 
-    function DashboardService($resource) {
-        var service = {
-            getOrdinalIndicator: getOrdinalIndicator
-        };
+    function DashboardService ($resource, DateUtils) {
+        var resourceUrl =  'api/dashboard/:agentNo';
 
-        return service;
-
-        function getOrdinalIndicator(n) {
-
-            if (n || n === 0) {
-
-                if (hasANonGenericOrdinalIndicator(n)) {
-                    return 'th';
+        return $resource(resourceUrl, {}, {
+            'query': { method: 'GET', isArray: true},
+            'get': {
+                method: 'GET',
+                transformResponse: function (data) {
+                    if (data) {
+                        data = angular.fromJson(data);
+                        data.date = DateUtils.convertLocalDateFromServer(data.date);
+                    }
+                    return data;
                 }
-
-                var decimal = n % 10;
-                switch (decimal) {
-                    case 1:
-                        return 'st';
-                        break;
-                    case 2:
-                        return 'nd';
-                        break;
-                    case 3:
-                        return 'rd';
-                        break;
-                    default:
-                        return 'th';
-                        break;
+            },
+            'update': {
+                method: 'PUT',
+                transformRequest: function (data) {
+                    var copy = angular.copy(data);
+                    copy.date = DateUtils.convertLocalDateToServer(copy.date);
+                    return angular.toJson(copy);
+                }
+            },
+            'save': {
+                method: 'POST',
+                transformRequest: function (data) {
+                    var copy = angular.copy(data);
+                    copy.date = DateUtils.convertLocalDateToServer(copy.date);
+                    return angular.toJson(copy);
                 }
             }
-
-            return '';
-        }
-
-        function hasANonGenericOrdinalIndicator(n) {
-            var lastTwoDigits = n % 100;
-            return lastTwoDigits > 10 && lastTwoDigits < 14;
-        }
+        });
     }
 })();

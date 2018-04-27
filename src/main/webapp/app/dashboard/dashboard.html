@@ -1,6 +1,7 @@
 <div ng-cloak>
   <div class="row">
-    <div class="col-md-6">
+    <div class="col-md-12">
+        <h3>Total Number of Policies</h3>
         <table class="jh-table table table-striped">
             <thead>
             <tr>
@@ -14,7 +15,7 @@
             </tr>
             </thead>
             <tbody>
-            <tr ng-repeat="policy_details in vm.policy_details">
+            <tr ng-repeat="policy_details in vm.policy_details | orderBy:'policyNo'">
                 <td><a ui-sref="policy-details-detail({id:policy_details.id})">{{policy_details.policyNo}}</a></td>
                 <td>{{policy_details.date | date:'mediumDate'}}</td>
                 <td>{{policy_details.customerName}}</td>
@@ -26,8 +27,41 @@
             </tbody>
         </table>
     </div>
-    <div class="col-md-6">
-
+    <div class="col-md-6 jumbotron">
+        <h3>Report Of Agent Scheme Policies</h3>
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>Agent Number</th>
+                    <th>Scheme Number</th>
+                    <th>Total Policies</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr ng-repeat="agentScheme in vm.agentSchemes | orderBy:'agentNo'" ng-if="agentScheme.policyNo">
+                    <td>{{agentScheme.agentNo}}</td>
+                    <td>{{agentScheme.schemeNo}}</td>
+                    <td>{{agentScheme.policyNo}}</td>
+                </tr>
+            </tbody>
+        </table>
     </div>
+      <div class="col-md-6 jumbotron">
+          <h3>Report Of Agent Commissions</h3>
+          <table class="table">
+              <thead>
+                <tr>
+                    <th>Agent Number</th>
+                    <th>Agent Commission</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr ng-repeat="agentCommission in vm.agentCommission | orderBy:'agentNo'">
+                    <td>{{agentCommission.agentNo}}</td>
+                    <td>{{agentCommission.commission}}</td>
+                </tr>
+              </tbody>
+          </table>
+      </div>
   </div>
 </div>
